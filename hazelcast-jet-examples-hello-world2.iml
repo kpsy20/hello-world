@@ -14,12 +14,13 @@
     <orderEntry type="module-library">
       <library name="Maven: cp.swig:cloud_profilerJNI:0.3.2">
         <CLASSES>
-          <root url="jar:///home/namsick96_yonsei_ac_kr/scratch/cloud_profilerJNI.jar!/" />
+          <root url="jar://$MODULE_DIR$/cloud_profilerJNI.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="library" name="Maven: net.sf.jopt-simple:jopt-simple:5.0.4" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.0" level="project" />
   </component>
 </module>

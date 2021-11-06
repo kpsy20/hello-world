@@ -9,7 +9,7 @@ import com.hazelcast.jet.pipeline.Sources;
 import com.hazelcast.jet.pipeline.StreamSource;
 import com.hazelcast.jet.pipeline.SourceBuilder.TimestampedSourceBuffer;
 import com.hazelcast.jet.pipeline.test.GeneratorFunction;
-import com.hazelcast.jet.pipeline.test.LongStreamSourceP;
+
 import com.hazelcast.jet.pipeline.test.SimpleEvent;
 
 import java.util.Arrays;
@@ -19,14 +19,14 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 
 @EvolvingApi
-public final class CustomSource {
-    private CustomSource() {
+public final class CustomSources {
+    private CustomSources() {
     }
 
     @Nonnull
     public static <T> BatchSource<T> items(@Nonnull Iterable<? extends T> items) {
         Objects.requireNonNull(items, "items");
-        return SourceBuilder.batch("items", (ctx) -> {
+        return (BatchSource<T>) SourceBuilder.batch("items", (ctx) -> {
             return null;
         }).fillBufferFn((ignored, buf) -> {
             items.forEach(buf::add);
@@ -43,7 +43,7 @@ public final class CustomSource {
     @Nonnull
     public static <T> BatchSource<T> itemsDistributed(@Nonnull Iterable<? extends T> items) {
         Objects.requireNonNull(items, "items");
-        return SourceBuilder.batch("items", (ctx) -> {
+        return (BatchSource<T>) SourceBuilder.batch("items", (ctx) -> {
             return ctx;
         }).fillBufferFn((ctx, buf) -> {
             Iterator<? extends T> iterator = items.iterator();
@@ -76,11 +76,15 @@ public final class CustomSource {
     public static <T> StreamSource<T> itemStream(int itemsPerSecond, @Nonnull GeneratorFunction<? extends T> generatorFn) {
         Objects.requireNonNull(generatorFn, "generatorFn");
         Util.checkSerializable(generatorFn, "generatorFn");
-        return SourceBuilder.timestampedStream("itemStream", (ctx) -> {
-            return new com.hazelcast.jet.pipeline.test.TestSources.ItemStreamSource(itemsPerSecond, generatorFn);
-        }).fillBufferFn(com.hazelcast.jet.pipeline.test.TestSources.ItemStreamSource::fillBuffer).build();
-    }
+        return (StreamSource<T>) SourceBuilder.timestampedStream("itemStream", (ctx) -> {
+            return new ItemStreamSource(itemsPerSecond, generatorFn);
+        }).fillBufferFn(ItemStreamSource::fillBuffer).build();
 
+        //return SourceBuilder.timestampedStream("itemStream", (ctx) -> {
+        //    return new com.hazelcast.jet.pipeline.test.TestSources.ItemStreamSource(itemsPerSecond, generatorFn);
+        //}).fillBufferFn(com.hazelcast.jet.pipeline.test.TestSources.ItemStreamSource::fillBuffer).build();
+    }
+/*
     @Nonnull
     public static StreamSource<Long> longStream(long eventsPerSecond, long initialDelayMillis) {
         return Sources.streamFromProcessorWithWatermarks("longStream", true, (eventTimePolicy) -> {
@@ -90,7 +94,7 @@ public final class CustomSource {
             });
         });
     }
-
+*/
     private static final class ItemStreamSource<T> {
         private static final int MAX_BATCH_SIZE = 1024;
         private final GeneratorFunction<? extends T> generator;
@@ -117,7 +121,6 @@ public final class CustomSource {
                 buf.add(item, ts);
                 this.emitSchedule += this.periodNanos;
             }
-
         }
     }
 }
