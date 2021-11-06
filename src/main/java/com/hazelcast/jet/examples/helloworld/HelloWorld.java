@@ -13,6 +13,7 @@ import com.hazelcast.jet.pipeline.Pipeline;
 import com.hazelcast.jet.pipeline.Sinks;
 import com.hazelcast.jet.pipeline.WindowDefinition;
 import com.hazelcast.jet.pipeline.test.TestSources;
+import com.hazelcast.jet.examples.helloworld.CustomSources;
 
 import cp.swig.cloud_profiler;
 import cp.swig.log_format;
@@ -39,10 +40,10 @@ public class HelloWorld {
 
 
         CloudProfiler.init();//add Cloudprofiler
-        p.readFrom(TestSources.itemStream(1)).withIngestionTimestamps().writeTo(Sinks.logger());
+        p.readFrom(CustomSources.itemStream(1)).withIngestionTimestamps().writeTo(Sinks.logger());
         long ch;
-        ch = cloud_profiler.openChannel("hazel-cast", log_format.ASCII, handler_type.IDENTITY);
-        cloud_profiler.logTS(ch, 0);
+        //ch = cloud_profiler.openChannel("hazel-cast", log_format.ASCII, handler_type.IDENTITY);
+        //cloud_profiler.logTS(ch, 0);
 
 
 /*
