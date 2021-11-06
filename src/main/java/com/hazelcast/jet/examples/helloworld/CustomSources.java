@@ -12,6 +12,10 @@ import com.hazelcast.jet.pipeline.test.GeneratorFunction;
 
 import com.hazelcast.jet.pipeline.test.SimpleEvent;
 
+import cp.swig.cloud_profiler;
+import cp.swig.handler_type;
+import cp.swig.log_format;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
@@ -21,6 +25,7 @@ import javax.annotation.Nonnull;
 @EvolvingApi
 public final class CustomSources {
     private CustomSources() {
+        CloudProfiler.init();
     }
 
     @Nonnull
