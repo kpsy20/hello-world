@@ -16,6 +16,8 @@ import cp.swig.cloud_profiler;
 import cp.swig.handler_type;
 import cp.swig.log_format;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
@@ -25,7 +27,6 @@ import javax.annotation.Nonnull;
 @EvolvingApi
 public final class CustomSources {
     private CustomSources() {
-        CloudProfiler.init();
     }
 
     @Nonnull
@@ -79,11 +80,24 @@ public final class CustomSources {
     @EvolvingApi
     @Nonnull
     public static <T> StreamSource<T> itemStream(int itemsPerSecond, @Nonnull GeneratorFunction<? extends T> generatorFn) {
+        BatchSource<String> fileSource = SourceBuilder
+                .batch("file-source", x -> new BufferedReader(new FileReader("input.txt")))
+                .<String>fillBufferFn((in, buf) -> {
+                    String line = in.readLine();
+                    if (line != null) {
+                        buf.add(line);
+                    } else {
+                        buf.close();
+                    }
+                })
+                .destroyFn(BufferedReader::close)
+                .build();
         Objects.requireNonNull(generatorFn, "generatorFn");
         Util.checkSerializable(generatorFn, "generatorFn");
         return (StreamSource<T>) SourceBuilder.timestampedStream("itemStream", (ctx) -> {
             return new ItemStreamSource(itemsPerSecond, generatorFn);
         }).fillBufferFn(ItemStreamSource::fillBuffer).build();
+
 
         //return SourceBuilder.timestampedStream("itemStream", (ctx) -> {
         //    return new com.hazelcast.jet.pipeline.test.TestSources.ItemStreamSource(itemsPerSecond, generatorFn);
