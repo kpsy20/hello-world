@@ -12,7 +12,7 @@ import com.hazelcast.jet.function.Observer;
 import com.hazelcast.jet.pipeline.*;
 import com.hazelcast.jet.pipeline.test.TestSources;
 import com.hazelcast.jet.examples.helloworld.CustomSources;
-
+import com.hazelcast.jet.pipeline.file.FileSources;
 import cp.swig.cloud_profiler;
 import cp.swig.log_format;
 import cp.swig.handler_type;
@@ -40,10 +40,6 @@ public class HelloWorld {
 		.writeTo(Sinks.logger());
 */
 
-        p.readFrom(Sources.buildNetworkSource())
-                .withoutTimestamps()
-                .peek()
-                .writeTo(Sinks.noop());
 
         //p.readFrom(CustomSources.itemStream(1)).withIngestionTimestamps().writeTo(Sinks.logger());
         //ch = cloud_profiler.openChannel("hazel-cast", log_format.ASCII, handler_type.IDENTITY);
@@ -74,9 +70,12 @@ public class HelloWorld {
         observable.addObserver(Observer.of(HelloWorld::printResults));
 */
         Pipeline p = buildPipeline();
-
+	BatchSource<String> source = FileSources.files("/home/kpsy20_yonsei_ac_kr/in")
+                                        .build();
+	p.readFrom(source)
+		.writeTo(Sinks.logger());
         JobConfig config = new JobConfig();
-        config.setName("hello-world");
+        config.setName("hello-world2");
         config.setProcessingGuarantee(ProcessingGuarantee.EXACTLY_ONCE);
         jet.newJobIfAbsent(p, config).join();
     }
@@ -95,13 +94,15 @@ class Sources {
     static StreamSource<String> buildNetworkSource() {
         return SourceBuilder
             .stream("network-source", ctx -> {
-                int port = 11000;
+                int port = 11002;
                 ServerSocket serverSocket = new ServerSocket(port);
+		CloudProfiler.init();
                 ctx.logger().info(String.format("Waiting for connection on port %d ...", port));
                 Socket socket = serverSocket.accept();
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
                 ctx.logger().info(String.format("Data source connected on port %d.", port));
+//		CloudProfiler.init(); no effect
                 return new NetworkContext(reader, serverSocket);
             })
             .<String>fillBufferFn((context, buf) -> {
@@ -129,7 +130,7 @@ class Sources {
         NetworkContext(BufferedReader reader, ServerSocket serverSocket) {
             this.reader = reader;
             this.serverSocket = serverSocket;
-            CloudProfiler.init();//add Cloudprofiler
+            //CloudProfiler.init();//add Cloudprofiler noeffect
 
         }
 
