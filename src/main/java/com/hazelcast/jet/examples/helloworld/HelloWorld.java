@@ -13,21 +13,18 @@ import com.hazelcast.jet.pipeline.*;
 import com.hazelcast.jet.pipeline.file.FileSources;
 import com.hazelcast.jet.pipeline.test.TestSources;
 import com.hazelcast.jet.examples.helloworld.CustomSources;
-<<<<<<< HEAD
 
 import cp.swig.cloud_profiler;
 import cp.swig.cloud_profilerJNI;
 import cp.swig.log_format;
 import cp.swig.handler_type;
 
-=======
 import com.hazelcast.jet.pipeline.file.FileSources;
 //import cp.swig.cloud_profiler;
 //import cp.swig.log_format;
 //import cp.swig.handler_type;
 //import cp.swig.cloud_profilerJNI;
 import cp.swig.*;
->>>>>>> 58aee49f9826b7b9bb59069c02b0ace550df87c3
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -92,8 +89,6 @@ public class HelloWorld {
         observable.addObserver(Observer.of(HelloWorld::printResults));
 */
         Pipeline p = buildPipeline();
-<<<<<<< HEAD
-=======
 //	BatchSource<String> source = FileSources.files("/home/kpsy20_yonsei_ac_kr/in")
 //                                        .build();
 //	p.readFrom(source)
@@ -113,7 +108,6 @@ public class HelloWorld {
 	long ch = cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
 	cloud_profiler.logTS(ch, 0);
 */
->>>>>>> 58aee49f9826b7b9bb59069c02b0ace550df87c3
         JobConfig config = new JobConfig();
         config.setName("hello-world");
         config.setProcessingGuarantee(ProcessingGuarantee.EXACTLY_ONCE);
@@ -183,8 +177,6 @@ class Sources {
         NetworkContext(BufferedReader reader, ServerSocket serverSocket) {
             this.reader = reader;
             this.serverSocket = serverSocket;
-<<<<<<< HEAD
-=======
 	    String value = System.getProperty("java.library.path");
 	    System.out.println("RESULT: " + value);
 //            CloudProfiler.init();
@@ -198,7 +190,6 @@ class Sources {
 //           System.out.println("RESULT: " + value2);
 //	    long ch = cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
 //	    cloud_profiler.logTS(ch, 0);
->>>>>>> 58aee49f9826b7b9bb59069c02b0ace550df87c3
 
         }
 
