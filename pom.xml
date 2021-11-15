@@ -40,7 +40,7 @@
         <dependency>
             <groupId>cp.swig</groupId>
             <artifactId>cloud_profilerJNI</artifactId>
-            <version>${cloud_profilerJNI.version}</version>
+	    <version>${cloud_profilerJNI.version}</version>
             <scope>system</scope>
             <systemPath>${cloud_profilerJNI.systemPath}</systemPath>
         </dependency>
@@ -64,8 +64,9 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.hazelcast.jet.examples.helloworld.HelloWorld</mainClass>
-                        </manifest>
+				<mainClass>com.hazelcast.jet.examples.helloworld.HelloWorld</mainClass>
+	
+		        </manifest>
                     </archive>
                 </configuration>
             </plugin>
