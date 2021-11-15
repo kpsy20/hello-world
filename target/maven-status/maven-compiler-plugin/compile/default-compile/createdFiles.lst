@@ -1,5 +1,7 @@
 com/hazelcast/jet/examples/helloworld/CustomSources.class
+com/hazelcast/jet/examples/helloworld/Sources.class
 com/hazelcast/jet/examples/helloworld/CustomSources$ItemStreamSource.class
 com/hazelcast/jet/examples/helloworld/CustomSources$1.class
 com/hazelcast/jet/examples/helloworld/HelloWorld.class
+com/hazelcast/jet/examples/helloworld/Sources$NetworkContext.class
 com/hazelcast/jet/examples/helloworld/CloudProfiler.class
