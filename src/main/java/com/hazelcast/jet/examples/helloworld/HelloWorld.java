@@ -13,18 +13,17 @@ import com.hazelcast.jet.pipeline.*;
 import com.hazelcast.jet.pipeline.test.TestSources;
 import com.hazelcast.jet.examples.helloworld.CustomSources;
 import com.hazelcast.jet.pipeline.file.FileSources;
-import cp.swig.cloud_profiler;
-import cp.swig.log_format;
-import cp.swig.handler_type;
-import cp.swig.cloud_profilerJNI;
-
+//import cp.swig.cloud_profiler;
+//import cp.swig.log_format;
+//import cp.swig.handler_type;
+//import cp.swig.cloud_profilerJNI;
+import cp.swig.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import java.util.Properties;
 
@@ -67,6 +66,15 @@ public class HelloWorld {
     }
 
     public static void main(String[] args) {
+	try{Class.forName("com.hazelcast.jet.examples.helloworld.CloudProfiler");
+        }
+        catch(Exception e)
+        {
+		//System.out.println(e);
+		int a=0;
+        }
+        long ch = cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
+        cloud_profiler.logTS(ch, 0);
         JetInstance jet = Jet.bootstrappedInstance();
 /*
         Observable<List<Long>> observable = jet.getObservable(RESULTS);
@@ -78,14 +86,20 @@ public class HelloWorld {
 //	p.readFrom(source)
 //		.writeTo(Sinks.logger());
 //		Pipeline p = Pipeline.create();
-	p.readFrom(Sources.buildNetworkSource())
-	 .withoutTimestamps()
-	 .peek()
-	 .writeTo(Sinks.logger());
+	p.readFrom(Sources.buildNetworkSource());
+//	 .withoutTimestamps()
+//	 .peek()
+//	 .writeTo(Sinks.logger());
 //	CloudProfiler.init();
-//	long ch = cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
-//	cloud_profiler.logTS(ch, 0);
-
+/*
+	try{Class.forName("com.hazelcast.jet.examples.helloworld.CloudProfiler");
+	}
+	catch(Exception e)
+	{System.out.println(e);
+	}
+	long ch = cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
+	cloud_profiler.logTS(ch, 0);
+*/
         JobConfig config = new JobConfig();
         config.setName("hello-world");
         config.setProcessingGuarantee(ProcessingGuarantee.EXACTLY_ONCE);
@@ -93,6 +107,7 @@ public class HelloWorld {
 	config.addClass(cp.swig.cloud_profilerJNI.class);
 	config.addClass(cp.swig.log_format.class);
 	config.addClass(cp.swig.handler_type.class);
+	
         jet.newJobIfAbsent(p, config).join();
     }
 
@@ -110,7 +125,7 @@ class Sources {
     static StreamSource<String> buildNetworkSource() {
         return SourceBuilder
             .stream("network-source", ctx -> {
-                int port = 11039;
+                int port = 11045;
                 ServerSocket serverSocket = new ServerSocket(port);
 		System.out.println("HEHEHEHHHHHHHHHHHHHHHHH"); //okay
 //		CloudProfiler.init();
@@ -128,6 +143,7 @@ class Sources {
             })
             .<String>fillBufferFn((context, buf) -> {
                 BufferedReader reader = context.getReader();
+		
                 for (int i = 0; i < 128; i++) {
                     if (!reader.ready()) {
                         return;
@@ -153,11 +169,17 @@ class Sources {
             this.serverSocket = serverSocket;
 	    String value = System.getProperty("java.library.path");
 	    System.out.println("RESULT: " + value);
-            CloudProfiler.init();
-	    String value2 = System.getProperty("java.library.path");
-            System.out.println("RESULT: " + value2);
-	    long ch = cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
-	    cloud_profiler.logTS(ch, 0);
+//            CloudProfiler.init();
+//	    try{            
+//	    Class.forName("com.hazelcast.jet.examples.helloworld.CloudProfiler");
+//	    }
+//	    catch(Exception e)
+//	    {System.out.println(e);
+//	    }
+//	    String value2 = System.getProperty("java.library.path");
+//           System.out.println("RESULT: " + value2);
+//	    long ch = cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
+//	    cloud_profiler.logTS(ch, 0);
 
         }
 
