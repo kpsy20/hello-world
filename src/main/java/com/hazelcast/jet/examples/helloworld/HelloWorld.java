@@ -10,10 +10,12 @@ import com.hazelcast.jet.config.ProcessingGuarantee;
 import com.hazelcast.jet.datamodel.WindowResult;
 import com.hazelcast.jet.function.Observer;
 import com.hazelcast.jet.pipeline.*;
+import com.hazelcast.jet.pipeline.file.FileSources;
 import com.hazelcast.jet.pipeline.test.TestSources;
 import com.hazelcast.jet.examples.helloworld.CustomSources;
 
 import cp.swig.cloud_profiler;
+import cp.swig.cloud_profilerJNI;
 import cp.swig.log_format;
 import cp.swig.handler_type;
 
@@ -46,8 +48,9 @@ public class HelloWorld {
                 .writeTo(Sinks.noop());
 
         //p.readFrom(CustomSources.itemStream(1)).withIngestionTimestamps().writeTo(Sinks.logger());
-        //ch = cloud_profiler.openChannel("hazel-cast", log_format.ASCII, handler_type.IDENTITY);
-        //cloud_profiler.logTS(ch, 0);
+
+        //long ch = cloud_profiler.openChannel("hazel-cast", log_format.ASCII, handler_type.IDENTITY);
+        //cloud_profiler.logTS(1, 0);
 
 
 /*
@@ -74,13 +77,15 @@ public class HelloWorld {
         observable.addObserver(Observer.of(HelloWorld::printResults));
 */
         Pipeline p = buildPipeline();
-
         JobConfig config = new JobConfig();
         config.setName("hello-world");
         config.setProcessingGuarantee(ProcessingGuarantee.EXACTLY_ONCE);
         jet.newJobIfAbsent(p, config).join();
-    }
+        config.addClass(cloud_profiler.class);
+        config.addClass(cp.swig.cloud_profilerJNI.class);
 
+        config.addClass(cloud_profilerJNI.class);
+    }
     private static void printResults(List<Long> topNumbers) {
         StringBuilder sb = new StringBuilder(String.format("\nTop %d random numbers in the latest window: ", TOP));
         for (int i = 0; i < topNumbers.size(); i++) {
@@ -88,7 +93,6 @@ public class HelloWorld {
         }
         System.out.println(sb.toString());
     }
-
 }
 
 class Sources {
@@ -129,7 +133,6 @@ class Sources {
         NetworkContext(BufferedReader reader, ServerSocket serverSocket) {
             this.reader = reader;
             this.serverSocket = serverSocket;
-            CloudProfiler.init();//add Cloudprofiler
 
         }
 
