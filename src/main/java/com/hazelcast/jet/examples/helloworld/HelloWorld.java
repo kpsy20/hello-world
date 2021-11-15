@@ -9,8 +9,8 @@ public class HelloWorld {
         } catch (Exception e) {
             System.out.println(e);
         }
-        long ch = cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
-        cloud_profiler.logTS(ch, 0);
+        long ch = cp.swig.cloud_profiler.openChannel("test", log_format.ASCII, handler_type.IDENTITY);
+        cp.swig.cloud_profiler.logTS(ch, 0);
     }
 }
 
