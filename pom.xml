@@ -41,8 +41,8 @@
             <groupId>cp.swig</groupId>
             <artifactId>cloud_profilerJNI</artifactId>
 	    <version>${cloud_profilerJNI.version}</version>
-            <scope>system</scope>
-            <systemPath>${cloud_profilerJNI.systemPath}</systemPath>
+	    <scope>system</scope>
+	    <systemPath>${cloud_profilerJNI.systemPath}</systemPath>
         </dependency>
         <dependency>
             <groupId>net.sf.jopt-simple</groupId>

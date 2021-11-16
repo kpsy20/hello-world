@@ -1,9 +1,9 @@
 package com.hazelcast.jet.examples.helloworld;
 
 import cp.swig.*;
-
+import cp.swig.log_format;
+import cp.swig.handler_type;
 public class HelloWorld {
-    private static cloud_profilerJNI cpj = new cloud_profilerJNI();
     public static void main(String[] args) {
         try {
             Class.forName("com.hazelcast.jet.examples.helloworld.CloudProfiler");
