@@ -29,7 +29,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <cloud_profilerJNI.version>0.3.2</cloud_profilerJNI.version>
-	<cloud_profilerJNI.systemPath>/home/kpsy20_yonsei_ac_kr/hazelcast-jet-4.5.1/lib/cloud_profilerJNI.jar</cloud_profilerJNI.systemPath>
+	<cloud_profilerJNI.systemPath>/home/namsick96_yonsei_ac_kr/scratch/cloud_profilerJNI.jar</cloud_profilerJNI.systemPath>
     </properties>
     <dependencies>
         <dependency>
@@ -63,9 +63,11 @@
                 <version>3.2.0</version>
                 <configuration>
                     <archive>
-                        <manifest>
+			    <manifest>
+				    <addClasspath>true</addClasspath>
+				    <classpathPrefix>${cloud_profilerJNI.systemPath}</classpathPrefix>
 				<mainClass>com.hazelcast.jet.examples.helloworld.HelloWorld</mainClass>
-	
+				
 		        </manifest>
                     </archive>
                 </configuration>
